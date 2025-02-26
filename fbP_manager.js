@@ -72,7 +72,7 @@ function fbP_procLogin(_loginStatus, _save, _user, _error) {
     console.log("User details saved to sessionStorage: " + JSON.stringify(_save));
 
   }
-
+  fb_writeRec('users', _save.uid, _save, fbP_procWriteRec);
 }
 
 

@@ -6,6 +6,7 @@
 
 console.log("%c fb_io.js", "color:blue");
 
+
 const firebaseConfig = {
     apiKey: "AIzaSyByB-WJsNPQEDK7SZ3dXrPMEUJ8aUpaaAg",
     authDomain: "comp-2025-caylan-banks.firebaseapp.com",
@@ -57,7 +58,7 @@ const firebaseConfig = {
         });
       }
     }
-
+   
   }
 
 /**************************************************************/
@@ -95,8 +96,10 @@ const firebaseConfig = {
 /**********************************************************/
 //fb_writeRec('admin', 'aaa', adminData, _procFunc)
 function fb_writeRec(_path, _key, _data, _procFunc) {
-    if (!_data.uid || !_data.displayName || !_data.email) {
-      console.error("Invalid data provided for writing.");
+  console.log("fb_writeRec(): _data =", _data);
+
+  if (!_data.uid || !_data.displayName || !_data.email) {
+    console.error("Invalid or incomplete data:", _data);  
       _procFunc(_path, _key, _data, new Error("Invalid data"));
       return;
     }
