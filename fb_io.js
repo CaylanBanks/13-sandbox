@@ -98,6 +98,8 @@ const firebaseConfig = {
 function fb_writeRec(_path, _key, _data, _procFunc) {
   console.log("fb_writeRec(): _data =", _data);
 
+ 
+
   if (!_data.uid || !_data.displayName || !_data.email) {
     console.error("Invalid or incomplete data:", _data);  
       _procFunc(_path, _key, _data, new Error("Invalid data"));

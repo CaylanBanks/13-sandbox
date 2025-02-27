@@ -63,6 +63,7 @@ function fbP_procLogin(_loginStatus, _save, _user, _error) {
     _save.photoURL = _user.photoURL;
     _save.emailVerified = _user.emailVerified;
 
+    // Save user details to session storage
     sessionStorage.setItem("uid", _user.uid);
     sessionStorage.setItem("email", _user.email);
     sessionStorage.setItem("displayName", _user.displayName);
@@ -70,9 +71,9 @@ function fbP_procLogin(_loginStatus, _save, _user, _error) {
     sessionStorage.setItem("loginStatus", _loginStatus);
 
     console.log("User details saved to sessionStorage: " + JSON.stringify(_save));
-
+    fb_writeRec('users', _save.uid, _save, fbP_procWriteRec);
   }
-  fb_writeRec('users', _save.uid, _save, fbP_procWriteRec);
+  
 }
 
 
