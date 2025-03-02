@@ -24,7 +24,7 @@ const firebaseConfig = {
 // Input:  User logs in
 // Return: n/a
 /**************************************************************/
- function fb_login(_save, _procFunc) {
+ function fb_login() {
     console.log('fb_login() ');
     firebase.auth().onAuthStateChanged(newLogin);
   
@@ -32,21 +32,30 @@ const firebaseConfig = {
      let loginStatus;
       if (user) {
         // user is signed in, so call function to process login data
+        console.log("Logged in");
+        console.log(user)
         loginStatus = 'logged in';
         _procFunc(loginStatus, user, _save, null);
+       firebase.database().ref('user/Caylan').set(
+        {
+          age: 17,
+          feet: 2,
+          hair: "brown",
+        }
+       )
       } 
       else {
         // user NOT logged in, so redirect to Google login
         loginStatus = 'logged out';
         console.log('fb_login(): status = ' + loginStatus);
-  
-        var provider = new firebase.auth.GoogleAuthProvider();
+        
+        // var provider = new firebase.auth.GoogleAuthProvider();
         /* To force Google sign to ask which account to use:
         var provider = new firebase.auth.GoogleAuthProvider();
         provider.setCustomParameters({
           prompt: 'select_account'
         });
-        */
+        
         firebase.auth().signInWithPopup(provider).then(function(result) {
           loginStatus = 'logged in via popup';
           _procFunc(loginStatus, result.user, _save);
@@ -56,6 +65,7 @@ const firebaseConfig = {
           loginStatus = 'error';
           _procFunc(loginStatus, null, _save, error);
         });
+        */
       }
     }
    

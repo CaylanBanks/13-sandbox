@@ -52,7 +52,6 @@ function fbP_initialize() {
 /**************************************************************/
 function fbP_procLogin(_loginStatus, _save, _user, _error) {
   console.log("fbP_procLogin(): status = " + _loginStatus);
-
   if (_loginStatus === "error") {
     console.error("Login error: " + _error.code + " " + _error.message);
     alert("Login failed: " + _error.message);
@@ -73,7 +72,6 @@ function fbP_procLogin(_loginStatus, _save, _user, _error) {
     console.log("User details saved to sessionStorage: " + JSON.stringify(_save));
     fb_writeRec('users', _save.uid, _save, fbP_procWriteRec);
   }
-  
 }
 
 
