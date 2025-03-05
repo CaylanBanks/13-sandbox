@@ -41,7 +41,7 @@ const firebaseConfig = {
         console.log(user.photoURL);
         console.log(user);
         loginStatus = 'logged in';
-        fbP_procLogin(loginStatus, user)
+        //fbP_procLogin(loginStatus, user)
 
         firebase.database().ref("/").set (
           {

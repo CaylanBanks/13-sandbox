@@ -62,11 +62,7 @@ function fbP_procLogin(loginStatus, user, _save,  _error) {
     console.error("Login error: " + _error.code + " " + _error.message);
     alert("Login failed: " + _error.message);
   } else {
-    _save.uid = user.uid;
-    _save.email = user.email;
-    _save.displayName = user.displayName;
-    _save.photoURL = user.photoURL;
-    _save.emailVerified = user.emailVerified;
+    
   
     // Save user details to session storage
     sessionStorage.setItem("uid", user.uid);
