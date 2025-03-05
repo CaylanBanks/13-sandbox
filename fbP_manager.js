@@ -4,7 +4,7 @@
 // Written by Caylan Banks Term 2 2024
 /**************************************************************/
 
-console.log("%c fbP_manager.js", "color:blue");
+console.log("%c fbP_manager.js", "color:green");
 
 fbP_initialize();
 /**************************************************************/
@@ -50,24 +50,30 @@ function fbP_initialize() {
 // Process login result
 // Input: loginStatus, save object, user object, error object
 /**************************************************************/
-function fbP_procLogin(_loginStatus, _save, _user, _error) {
-  console.log("fbP_procLogin(): status = " + _loginStatus);
-  if (_loginStatus === "error") {
+function fbP_procLogin(loginStatus, user, _save,  _error) {
+  var uid = user.uid;
+    console.log("fbP_procLogin(): status = " + loginStatus);
+    console.log(user.uid);
+    console.log(user.email);
+    console.log(user.displayName);
+    console.log(user.photoURL);
+    console.log(user);
+  if (loginStatus === "error") {
     console.error("Login error: " + _error.code + " " + _error.message);
     alert("Login failed: " + _error.message);
   } else {
-    _save.uid = _user.uid;
-    _save.email = _user.email;
-    _save.displayName = _user.displayName;
-    _save.photoURL = _user.photoURL;
-    _save.emailVerified = _user.emailVerified;
-
+    _save.uid = user.uid;
+    _save.email = user.email;
+    _save.displayName = user.displayName;
+    _save.photoURL = user.photoURL;
+    _save.emailVerified = user.emailVerified;
+  
     // Save user details to session storage
-    sessionStorage.setItem("uid", _user.uid);
-    sessionStorage.setItem("email", _user.email);
-    sessionStorage.setItem("displayName", _user.displayName);
-    sessionStorage.setItem("photoURL", _user.photoURL);
-    sessionStorage.setItem("loginStatus", _loginStatus);
+    sessionStorage.setItem("uid", user.uid);
+    sessionStorage.setItem("email", user.email);
+    sessionStorage.setItem("displayName", user.displayName);
+    sessionStorage.setItem("photoURL", user.photoURL);
+    sessionStorage.setItem("loginStatus", loginStatus);
 
     console.log("User details saved to sessionStorage: " + JSON.stringify(_save));
     fb_writeRec('users', _save.uid, _save, fbP_procWriteRec);

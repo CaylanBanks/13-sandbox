@@ -4,3 +4,11 @@
   <script src="https://p5play.org/v3/planck.min.js"></script>
   <script src="https://p5play.org/v3/p5play.js"></script>
  
+
+ firebase.database().ref('user/Caylan').set(
+        {
+          age: 17,
+          feet: 2,
+          hair: "brown",
+        }
+       )

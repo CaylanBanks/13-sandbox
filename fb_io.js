@@ -4,7 +4,7 @@
 // Written by Caylan Banks 2025
 /**************************************************************/
 
-console.log("%c fb_io.js", "color:blue");
+console.log("%c fb_io.js", "color:green");
 
 
 const firebaseConfig = {
@@ -24,25 +24,33 @@ const firebaseConfig = {
 // Input:  User logs in
 // Return: n/a
 /**************************************************************/
- function fb_login() {
+ function fb_login(_save, _user,) {
     console.log('fb_login() ');
     firebase.auth().onAuthStateChanged(newLogin);
-  
+    
+    
     function newLogin(user) {
      let loginStatus;
       if (user) {
+        var uid = user.uid;
         // user is signed in, so call function to process login data
         console.log("Logged in");
-        console.log(user)
+        console.log(user.uid);
+        console.log(user.email);
+        console.log(user.displayName);
+        console.log(user.photoURL);
+        console.log(user);
         loginStatus = 'logged in';
-        _procFunc(loginStatus, user, _save, null);
-       firebase.database().ref('user/Caylan').set(
-        {
-          age: 17,
-          feet: 2,
-          hair: "brown",
-        }
-       )
+        fbP_procLogin(loginStatus, user)
+
+        firebase.database().ref("/").set (
+          {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+          }
+        )
       } 
       else {
         // user NOT logged in, so redirect to Google login
@@ -108,9 +116,9 @@ const firebaseConfig = {
 function fb_writeRec(_path, _key, _data, _procFunc) {
   console.log("fb_writeRec(): _data =", _data);
 
- 
+  
 
-  if (!_data.uid || !_data.displayName || !_data.email) {
+  if (!_data.uid || !_data.displayName || !_data.email || _data.photoURL) {
     console.error("Invalid or incomplete data:", _data);  
       _procFunc(_path, _key, _data, new Error("Invalid data"));
       return;
@@ -119,7 +127,7 @@ function fb_writeRec(_path, _key, _data, _procFunc) {
     console.log(
       `fb_writeRec(): path= ${_path} key= ${_key} data= ${_data.uid}/${_data.displayName}/${_data.email}`
     );
-  
+    
     firebase.database().ref(_path + "/" + _key).set(_data, (error) => {
       if (error) {
         _procFunc(_path, _key, _data, error);
