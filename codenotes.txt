@@ -14,7 +14,7 @@
        )
 
 
-       _save.uid = user.uid;
+    _save.uid = user.uid;
     _save.email = user.email;
     _save.displayName = user.displayName;
     _save.photoURL = user.photoURL;

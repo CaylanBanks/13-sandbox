@@ -10,7 +10,7 @@ console.log("%c fb_io.js", "color:green");
 const firebaseConfig = {
     apiKey: "AIzaSyByB-WJsNPQEDK7SZ3dXrPMEUJ8aUpaaAg",
     authDomain: "comp-2025-caylan-banks.firebaseapp.com",
-    databaseURL: "https://comp-2024-caylan-banks-default-rtdb.firebaseio.com",
+    databaseURL: "https://comp-2025-caylan-banks-default-rtdb.firebaseio.com",
     projectId: "comp-2025-caylan-banks",
     storageBucket: "comp-2025-caylan-banks.firebasestorage.app",
     messagingSenderId: "727244724088",
@@ -41,9 +41,9 @@ const firebaseConfig = {
         console.log(user.photoURL);
         console.log(user);
         loginStatus = 'logged in';
-        //fbP_procLogin(loginStatus, user)
-
-        firebase.database().ref("/").set (
+        //fbP_procLogin(loginStatus, user);
+        //write userdetails to firebase
+        firebase.database().ref(user.uid + "/userDetails").set (
           {
             uid: user.uid,
             email: user.email,
@@ -51,14 +51,27 @@ const firebaseConfig = {
             photoURL: user.photoURL,
           }
         )
+        // write users score for guess the number game to database
+        firebase.database().ref(user.uid + "/gameScores/GTN").set (
+          {
+            score: 52
+          }
+        )
+        // write users score for JJTS game to database
+        firebase.database().ref(user.uid + "/gameScores/JJTS").set (
+          {
+            score: 20
+          }
+        )
+        console.log("Details written to DB");
       } 
       else {
         // user NOT logged in, so redirect to Google login
         loginStatus = 'logged out';
         console.log('fb_login(): status = ' + loginStatus);
         
-        // var provider = new firebase.auth.GoogleAuthProvider();
-        /* To force Google sign to ask which account to use:
+         var provider = new firebase.auth.GoogleAuthProvider();
+        // To force Google sign to ask which account to use:
         var provider = new firebase.auth.GoogleAuthProvider();
         provider.setCustomParameters({
           prompt: 'select_account'
@@ -73,7 +86,7 @@ const firebaseConfig = {
           loginStatus = 'error';
           _procFunc(loginStatus, null, _save, error);
         });
-        */
+        
       }
     }
    
