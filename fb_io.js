@@ -1,7 +1,8 @@
 /***************************************************************/
 // fb_io.js
+// Written by Caylan Banks 2024/2025
 //read & write to firebase
-// Written by Caylan Banks 2025
+//Handle login
 /**************************************************************/
 
 console.log("%c fb_io.js", "color:green");
@@ -45,7 +46,6 @@ const firebaseConfig = {
         //write userdetails to firebase
         firebase.database().ref(user.uid + "/userDetails").set (
           {
-            uid: user.uid,
             email: user.email,
             displayName: user.displayName,
             photoURL: user.photoURL,

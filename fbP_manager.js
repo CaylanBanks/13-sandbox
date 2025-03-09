@@ -1,7 +1,10 @@
 /***************************************************************/
 // fbP_manager.js
 // Read & write to Firebase
-// Written by Caylan Banks Term 2 2024
+//Initialise firebase
+//handle login
+//Proceeds firebase callbacks
+// Written by Caylan Banks 2024/2025
 /**************************************************************/
 
 console.log("%c fbP_manager.js", "color:green");
