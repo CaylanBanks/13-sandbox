@@ -3,7 +3,10 @@
 //to parkour to reach the top
 
 
-console.log("%c JTTS_game.js", "color: blue;");
+console.log("%c JTTS_game.js", "color: green;");
+
+
+
 // variables
 let frogSpriteImage;
 let frog;
@@ -22,17 +25,17 @@ const PLAYERRADIUS = 100;
 const PLAYERVISUALSIZE = 80;
 
 //Functions
-function preload() {
-    console.log("preload: ");
-    frogSpriteImage = loadImage("Images/frog.jfif");
-    tileSheetImage = loadImage("Images/tilesheet.png");
-}
+//function preload() {
+//    console.log("preload: ");
+ //   frogSpriteImage = loadImage("Images/frog.jfif");
+ //   tileSheetImage = loadImage("Images/tilesheet.png");
+//}
 
-function setup() {
+function jttsSetup() {
     console.log("setup: ");
-    console.log(
-        "Canvas Created, dimensions: (w/h)" + canvas.w + "/" + canvas.h
-    );
+   // console.log(
+   //     "Canvas Created, dimensions: (w/h)" + canvas.w + "/" + canvas.h
+   // );
     //gravity
     world.gravity.y = 8;
     
@@ -40,7 +43,7 @@ function setup() {
      p_timer.textContent = 'time: ' + sec;
     
     //frog creation
-    cnv = new Canvas(windowWidth, (windowHeight - 176));
+    //cnv = new Canvas(windowWidth, (windowHeight - 176));
     frog = new Sprite(windowWidth / 2, windowHeight / 2, PLAYERVISUALSIZE, PLAYERVISUALSIZE); // position, then size
     frog.addImage(frogSpriteImage);
     frogSpriteImage.resize(PLAYERRADIUS, PLAYERRADIUS);
