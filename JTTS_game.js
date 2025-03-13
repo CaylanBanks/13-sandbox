@@ -25,28 +25,28 @@ const PLAYERRADIUS = 100;
 const PLAYERVISUALSIZE = 80;
 
 //Functions
-//function preload() {
-//    console.log("preload: ");
- //   frogSpriteImage = loadImage("Images/frog.jfif");
- //   tileSheetImage = loadImage("Images/tilesheet.png");
-//}
+function preload() {
+    console.log("preload: ");
+    frogSpriteImage = loadImage("Images/frog.jfif");
+    tileSheetImage = loadImage("Images/tilesheet.png");
+}
 
-function jttsSetup() {
+function setup() {
     console.log("setup: ");
-   // console.log(
-   //     "Canvas Created, dimensions: (w/h)" + canvas.w + "/" + canvas.h
-   // );
+    console.log(
+        "Canvas Created, dimensions: (w/h)" + canvas.w + "/" + canvas.h
+    );
     //gravity
     world.gravity.y = 8;
     
     //timer
-     p_timer.textContent = 'time: ' + sec;
+   //  p_timer.textContent = 'time: ' + sec;
     
     //frog creation
-    //cnv = new Canvas(windowWidth, (windowHeight - 176));
+    cnv = new Canvas(windowWidth, (windowHeight - 176));
     frog = new Sprite(windowWidth / 2, windowHeight / 2, PLAYERVISUALSIZE, PLAYERVISUALSIZE); // position, then size
-    frog.addImage(frogSpriteImage);
-    frogSpriteImage.resize(PLAYERRADIUS, PLAYERRADIUS);
+    //frog.image = frogSpriteImage;
+    //frogSpriteImage.resize(PLAYERRADIUS, PLAYERRADIUS);
     frog.rotationLock = true
     //callingtiles
     tileCreate();
@@ -118,7 +118,7 @@ function loadEndScreen() {
 function timerFunc() {
     console.log("Timer running")
     sec++;
-    p_timer.textContent = 'time: ' + sec;
+   // p_timer.textContent = 'time: ' + sec;
 }
 
 function frogDies() {
@@ -129,15 +129,14 @@ function frogDies() {
 
 
 function draw() {
-   console.log("Draw: ")
+   console.log("Draw: "+millis())
    clear();
    
    //camera
-   camera.on()
-   camera.x = frog.x
-   camera.y = frog.y
+   camera.x = frog.x;
+   camera.y = frog.y;
    camera.zoom = 1.5;
-   camera.off()
+ 
   
   //frog jumping code
    if (kb.presses("ArrowUp")) {
