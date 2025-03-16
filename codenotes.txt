@@ -19,3 +19,8 @@
     _save.displayName = user.displayName;
     _save.photoURL = user.photoURL;
     _save.emailVerified = user.emailVerified;
+
+
+    else {
+       frog.velocity.x = 0;
+   }

@@ -31,10 +31,10 @@ function preload() {
     tileSheetImage = loadImage("Images/tilesheet.png");
 }
 
-function setup() {
-    console.log("setup: ");
+function jttsSetup() {
+    console.log("jttsSetup: ");
     console.log(
-        "Canvas Created, dimensions: (w/h)" + canvas.w + "/" + canvas.h
+        "Canvas Created, dimensions: (w/h)" + windowWidth + "/" + windowHeight
     );
     //gravity
     world.gravity.y = 8;
@@ -53,7 +53,13 @@ function setup() {
     intvTimer = setInterval(timerFunc, 1000);
 }
 
-
+/**********************************************************/
+// tilecreate
+// Called by jttsSetup
+// Create tiles
+// Input:  n/a
+// Return: n/a
+/**********************************************************/
 function tileCreate() {
     console.log("tilescreated: ");
     //grass code
@@ -110,22 +116,42 @@ function tileCreate() {
         
 }
 
+/**********************************************************/
+// loadEndScreen
+// Called by Draw
+// Load End Screen
+// Input:  Frog touches finish block and wins game
+// Return: n/a
+/**********************************************************/
 function loadEndScreen() {
     console.log("Loaded End Screen")
     window.location.href = "jttsendscreen.html";
 }
 
+/**********************************************************/
+// timerFunc
+// Called by jttsSetup
+// Create timer
+// Input:  n/a
+// Return: n/a
+/**********************************************************/
 function timerFunc() {
     console.log("Timer running")
     sec++;
    // p_timer.textContent = 'time: ' + sec;
 }
 
+/**********************************************************/
+// frogDies
+// Called by draw
+// When frog dies, respawns it at start position
+// Input:  Frog touches lava
+// Return: n/a
+/**********************************************************/
 function frogDies() {
     frog.x = windowWidth / 2;
     frog.y = windowHeight / 2;
 }
-
 
 
 function draw() {
@@ -133,10 +159,9 @@ function draw() {
    clear();
    
    //camera
-   camera.x = frog.x;
-   camera.y = frog.y;
+  // camera.x = frog.x;
+   //camera.y = frog.y;
    camera.zoom = 1.5;
- 
   
   //frog jumping code
    if (kb.presses("ArrowUp")) {
@@ -148,14 +173,14 @@ function draw() {
            frog.velocity.x = -2
    } else if (kb.pressing("ArrowRight")) {
            frog.velocity.x = 2
-   } else {
-       frog.velocity.x = 0;
-   }
+   } 
    
    //when frog falls and hits lava code
-   frog.collides(lavaBlock, frogDies);
+   if (frog.collides(lavaBlock)) {
+    frogDies();
+   };
    
    //end screen code
-   frog.collides(finishBlock, loadEndScreen);
+   //frog.collides(finishBlock, loadEndScreen);
    
 }

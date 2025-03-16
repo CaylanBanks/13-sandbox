@@ -20,7 +20,7 @@ const firebaseConfig = {
   };
 
 /**************************************************************/
-// fb_login(_save,_procFunc)
+// fb_login(_save,_user)
 // Called by various
 // Input:  User logs in
 // Return: n/a
@@ -120,7 +120,7 @@ const firebaseConfig = {
 
 /**********************************************************/
 // fb_writeRec(_path,_key,_data,_procFunc)
-// Called by ?????
+// Called by fbP_procLogin
 // Write rec to db
 // Input:  n/a
 // Return: n/a
