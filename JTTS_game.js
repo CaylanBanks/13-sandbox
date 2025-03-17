@@ -9,16 +9,15 @@ console.log("%c JTTS_game.js", "color: green;");
 
 // variables
 let frogSpriteImage;
+let tileSheetImage;
 let frog;
 let cnv;
-let tileSheetImage;
 let grass;
 let finishBlock;
 let lavaBlock;
 let sec = 0
 let gameEnd = false;
 let intvTimer;
-
 
 //constants
 const PLAYERRADIUS = 100;
@@ -27,23 +26,21 @@ const PLAYERVISUALSIZE = 80;
 //Functions
 function preload() {
     console.log("preload: ");
-    frogSpriteImage = loadImage("Images/frog.jfif");
+    //frogSpriteImage = loadImage("Images/frog.jfif");
     tileSheetImage = loadImage("Images/tilesheet.png");
+
 }
 
-function jttsSetup() {
-    console.log("jttsSetup: ");
-    console.log(
-        "Canvas Created, dimensions: (w/h)" + windowWidth + "/" + windowHeight
-    );
-    //gravity
-    world.gravity.y = 8;
+function setup() {
+    console.log("setup: ");
+    
+  
     
     //timer
    //  p_timer.textContent = 'time: ' + sec;
     
     //frog creation
-    cnv = new Canvas(windowWidth, (windowHeight - 176));
+    cnv = new Canvas(windowWidth, windowHeight);
     frog = new Sprite(windowWidth / 2, windowHeight / 2, PLAYERVISUALSIZE, PLAYERVISUALSIZE); // position, then size
     //frog.image = frogSpriteImage;
     //frogSpriteImage.resize(PLAYERRADIUS, PLAYERRADIUS);
@@ -51,11 +48,13 @@ function jttsSetup() {
     //callingtiles
     tileCreate();
     intvTimer = setInterval(timerFunc, 1000);
+      //gravity
+      world.gravity.y = 8;
 }
 
 /**********************************************************/
 // tilecreate
-// Called by jttsSetup
+// Called by setup
 // Create tiles
 // Input:  n/a
 // Return: n/a
@@ -130,7 +129,7 @@ function loadEndScreen() {
 
 /**********************************************************/
 // timerFunc
-// Called by jttsSetup
+// Called by setup
 // Create timer
 // Input:  n/a
 // Return: n/a
@@ -155,11 +154,11 @@ function frogDies() {
 
 
 function draw() {
-   console.log("Draw: "+millis())
+ //  console.log("Draw: "+millis())
    clear();
    
    //camera
-  // camera.x = frog.x;
+   // camera.x = frog.x;
    //camera.y = frog.y;
    camera.zoom = 1.5;
   
@@ -176,11 +175,16 @@ function draw() {
    } 
    
    //when frog falls and hits lava code
-   if (frog.collides(lavaBlock)) {
-    frogDies();
-   };
+   //if (frog.collides(lavaBlock)) {
+   // frogDies();
+  // };
    
    //end screen code
    //frog.collides(finishBlock, loadEndScreen);
+
+      // Draw the tiles
+      //grass.draw();
+      //finishBlock.draw();
+      //lavaBlock.draw();
    
 }
