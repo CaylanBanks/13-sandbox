@@ -51,18 +51,10 @@ const firebaseConfig = {
             photoURL: user.photoURL,
           }
         )
-        // write users score for guess the number game to database
-        firebase.database().ref(user.uid + "/gameScores/GTN").set (
-          {
-            score: 52
-          }
-        )
-        // write users score for JJTS game to database
-        firebase.database().ref(user.uid + "/gameScores/JJTS").set (
-          {
-            score: 20
-          }
-        )
+
+
+
+       
         console.log("Details written to DB");
       } 
       else {

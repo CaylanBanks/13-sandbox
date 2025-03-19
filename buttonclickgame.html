@@ -5,13 +5,39 @@
       <link rel="stylesheet" type="text/css" href="style.css" />
       <link href="style.css" rel="stylesheet" type="text/css">
       
+
+       <!-- P5.js & P5.play *****************************-->
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js" integrity="sha512-bzpp8klYroR6PFgL3RJ+VkvY5hJna7Zd38OA56peUDHSNQpSiN9lDQVnMYtcw7hoAVhbR6mAOdH+ymzg1o+G0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/addons/p5.sound.js" integrity="sha512-TU9AWtV5uUZPX8dbBAH8NQF1tSdigPRRT82vllAQ1Ke28puiqLA6ZVKxtUGlgrH6yWFnkKy+sE6luNEGH9ar0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+       <script src="https://p5play.org/v3/planck.min.js"></script>
+       <script src="https://p5play.org/v3/p5play.js"></script>
+
+
+  <!-- JQUERY ************************************************-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+ 
+  <!-- firebase start ****************************************-->
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css">
+  <!-- Firebase App -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+
+  <!-- Firebase Authentication -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+  <!-- Firebase Realtime Database -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <!-- Firebase Analytics -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+
       <meta charset="UTF-8">
       <title>Button Click Lobby</title>
       
 
 
-     <!--  <script defer src="fb_io.js"></script>
-      <script defer src="fbP_manager.js"></script>-->
+       <script defer src="fb_io.js"></script>
+      <script defer src="fbP_manager.js"></script>
       <script defer src="buttonClickGame.js"></script>
 
 
@@ -23,13 +49,12 @@
 
 
       </header>
-
+    <p id="countDownText"
          <div class="button">
-            <button class="w3-btn w3-xxxlarge w3-black" type="button">Click Me!</button>
+            <button onclick =  buttonClicked(); class="w3-btn w3-xxxlarge w3-black" type="button">Click Me!</button>
          </div>
 
       <main>
-
       </main>
 
       <footer>

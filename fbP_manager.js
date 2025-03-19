@@ -103,11 +103,29 @@ function fbP_procReadRec(_path, _key, _save, _error) {
 /**************************************************************/
 function fbP_procWriteRec(_path, _key, _data, _error) {
   console.log("fbP_procWriteRec()");
-
   if (_error) {
     console.error(`Error writing to ${_path}/${_key}:`, _error);
     alert("Write failed. See console log for details.");
   } else {
     console.log(`Successfully wrote to ${_path}/${_key}`);
   }
+}
+
+
+function fbP_procWriteScore() {
+console.log("scores written")
+ // write users score for guess the number game to database
+ firebase.database().ref(user.uid + "/gameScores/BC").set (
+  {
+     score: 6
+  }
+)
+
+// write users score for guess the number game to database
+firebase.database().ref(user.uid + "/gameScores/GTN").set (
+  {
+    score: 52
+  }
+)
+
 }
