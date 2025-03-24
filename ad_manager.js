@@ -1,10 +1,11 @@
-console.log("%c admin", "color: green;");
+console.log("%c ad_manager.js", "color:green");
+
 /*************************************************************
   ad_manager.js
 
   Written by Mr Bob, Term 1 2020
-  Develop a bagtnc W3.CSS interface.
-    v1 Bagtnc layout of landing & game pages.
+  Develop a basic W3.CSS interface.
+    v1 Basic layout of landing & game pages.
     v2 Landing/games pages full screen height but only display
        landing page on start up.
     v3 Stop canvas being displayed until its wanted.
@@ -17,15 +18,15 @@ console.log("%c admin", "color: green;");
        left hand div (user control panel).
     v7 Make START button toggle between START and STOP button. 
     v8 Add bouncing balls when START button clicked.
-    v9 Add reGTNze canvas.
-    v10 Make font gtnze respongtnve by ugtnng em instead of px.
+    v9 Add reSize canvas.
+    v10 Make font size responsive by using em instead of px.
     v11 Add firebase
     v12 Add admin with fixed table update
     v13 Add numeric validation
     v14 Add further comments
     v15 Modify to accept path as 1st param from readAll & 
         add class to button to set colour grey
-    v16 Modify to use admin.html page & sesgtnon storage
+    v16 Modify to use admin.html page & session storage
     v17 Alter _dbRec to _snapshot & alter order of function params
         on functions to process firebase readAll
     v18 DID NOT implement v18 change of COL_ to C_
@@ -34,7 +35,7 @@ console.log("%c admin", "color: green;");
     v20 Insert null as 2nd paramter to fb_readAll calls &
         use console.log instead of logIt function
     v21 Fix code comments.
-    v22 Replace DB button with GeoDash button to stop confugtnon
+    v22 Replace DB button with GTN button to stop confusion
 *************************************************************/
 
 /*************************************************************          //<=====
@@ -45,33 +46,28 @@ console.log("%c admin", "color: green;");
          copy the contents of this file into it.                        //<=====
     4. Taylor your ad_manger.js to fit your program code by looking     //<=====
          at lines ending with  //<=======                               //<=====
-    5. NOTE: I make use of contants GeoDash & GTN to hold the paths of my     //<=====
-        firebase scores. EG: const GeoDash = 'scores/GeoDash'                     //<=====
+    5. NOTE: I make use of contants GTN & BC to hold the paths of my     //<=====
+        firebase scores. EG: const GTN = 'scores/GTN'                     //<=====
     6. DO NOT ALTER ANYTHING BELOW THE COMMENT LINE                     //<=====
         "YOU SHOULD NOT ALTER ANY OF THE CODE BELOW"                    //<=====
 *************************************************************/          //<=====
 const COLAD_C = 'black';
 const COLAD_B = '#F0E68C';
-console.log('%c ad_manager.js \n--------------------',
-            'color: blue; background-color: white;');
-
-/**************************************************************/
-//Database Paths
-const DETAILS = "userdetails"
-
-
+const DETAILS = 'user';
+const BC= 'user/gameScore/BC';
 // fb_readALL
 // Reconstituted from gl
 // 
 function fb_readAll(_path,_something,_callback){
-    firebase.database().ref(_path).once('value', _doThis, fb_error);
-    function _doThis(snapshot){
-    _callback("OK","**PATH**",snapshot, "**save**","**error**");
-    }
+  firebase.database().ref(_path).once('value', _doThis, fb_error);
+  function _doThis(snapshot){
+  _callback("OK","**PATH**",snapshot, "**save**","**error**");
+  }
 };
 
-
-
+ function fb_error () {
+  console.log("fb_error()");
+ }
 /**************************************************************/
 // ad_load()
 // Called by ad_manager.html onload
@@ -105,25 +101,8 @@ function ad_user() {
 }
 
 /**************************************************************/
-// ad_GeoDash()
-// Input event; called when admin's GeoDash (Bouncing Balls) button clicked
-// Display GeoDash admin screen
-// Input:  n/a
-// Return: n/a
-/**************************************************************/
-function ad_GeoDash() {
-  console.log('%c ad_GeoDash(): ',
-              'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';');
-
-  ad_alterClass('ad_btn', 'grey');
-  document.getElementById("b_adGeoDash").style.backgroundColor = "cyan";
-  // ENSURE THE READ FUNCTION NAME & THE PATH NAME ARE CORRECT          //<=====
-  fb_readAll("gameScores/GeoDash", null, ad_processGeoDashReadAll);                            //<=====
-}
-
-/**************************************************************/
 // ad_GTN()
-// Input event; called when admin's GTN  button clicked
+// Input event; called when admin's GTN (Bouncing Balls) button clicked
 // Display GTN admin screen
 // Input:  n/a
 // Return: n/a
@@ -135,23 +114,24 @@ function ad_GTN() {
   ad_alterClass('ad_btn', 'grey');
   document.getElementById("b_adGTN").style.backgroundColor = "cyan";
   // ENSURE THE READ FUNCTION NAME & THE PATH NAME ARE CORRECT          //<=====
-  fb_readAll("gameScores/GTN", null, ad_processGTNReadAll);                            //<=====
+  fb_readAll(GTN, null, ad_processGTNReadAll);                            //<=====
 }
+
 /**************************************************************/
-// ad_admin()
-// Input event; called when admin's admin  button clicked
-// Display  admin screen
+// adBC()
+// Input event; called when admin's BC (button click game) button clicked
+// Display BC admin screen
 // Input:  n/a
 // Return: n/a
 /**************************************************************/
-function ad_admin() {
-  console.log('%c ad_admin(): ',
+function ad_BC() {
+  console.log('%c ad_BC(): ',
               'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';');
 
   ad_alterClass('ad_btn', 'grey');
-  document.getElementById("b_adAdmin").style.backgroundColor = "cyan";
+  document.getElementById("b_adBC").style.backgroundColor = "cyan";
   // ENSURE THE READ FUNCTION NAME & THE PATH NAME ARE CORRECT          //<=====
-  fb_readAll("adnim", null, ad_processAdminReadAll);                            //<=====
+  fb_readAll(BC, null, ad_processBCReadAll);                            //<=====
 }
 
 /**************************************************************/
@@ -189,10 +169,10 @@ function ad_processUSERReadAll(_result, _path, _snapshot, _save, _error) {
       //  MATCH YOUR FIREBASE RECORDS FOR THE PATH                      //<=====
       ad_adminArray.push({
         displayName: childData.displayName,
-        gender: childData.gender,
+        email: childData.email,
         // Left photoURL out ==> so long the table will be too wide for screen
         //photoURL:   childData.photoURL,  
-        name: childData.name,
+        gameName: childData.gameName,
         age: childData.age,
         uid: childKey
         //   more fields ????
@@ -211,60 +191,6 @@ function ad_processUSERReadAll(_result, _path, _snapshot, _save, _error) {
     5, DETAILS);                                                        //<=====
 }
 
-/**************************************************************/
-// ad_processGeoDashReadAll(_result, _path,  _snapshot, _save, _error)
-// Called by fb_readAll to handle result of read ALL GeoDash records request.
-// Save data & update display with record info
-// Input:  result('waiting...', 'OK', 'error'), path, 
-//         snapshot, where to save it & error msg if any
-//         NOTE: This is the raw data, EG snapshot, and
-//                NOT the output from snapshot.val()
-// Return: n/a
-/**************************************************************/
-//                 _procFunc(_result, _path, _snapshot, _save, _error)
-function ad_processGeoDashReadAll(_result, _path, _snapshot, _save, _error) {
-  console.log('%c ad_processGeoDashReadAll(): result= ' + _result,
-              'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';');
-
-  // Note: if read was successful, _result  must = "OK"                 //<=====
-  if (_result != 'OK') {
-    console.error('Database read error for ' + _path + '\n' + _error);
-    alert('Database read error; see console log for details');
-    return;
-  }
-
-  var childKey;
-  var childData;
-  var ad_adminArray = [];
-
-  if (_snapshot.val() != null) {
-    _snapshot.forEach(function(childSnapshot) {
-      childKey = childSnapshot.key;
-      childData = childSnapshot.val();
-      console.log(Object.keys(childData));
-
-      // ENSURE THE FEILDS YOU PUSH INTO THE ARRAY OF OBJECTS           //<=====
-      //  MATCH YOUR FIREBASE RECORDS FOR THE PATH                      //<=====
-      ad_adminArray.push({
-        uid: childKey,
-        userName: childData.user,
-        highScore: childData.lastScore,
-        lastScore: childData.highScore
-        //   more fields ????
-      });
-    });
-  } else {
-    console.log('%c ad_processGeoDashReadAll(): no records',
-                'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';');
-  }
-
-  // build & display user data
-  // MAKE SURE THE FOLOWING PARAMETERS ARE CORRECT. PARAMETER:          //<=====
-  //  7 = COLUMMN NUMBER WHICH CONTAINS THE DATABASE KEY.               //<=====
-  //  8 = DATABASE PATH THE RECORDS WERE READ FROM.                     //<=====
-  ad_displayAll("t_userData", ad_adminArray, true, "", "", "",
-    1, "gameScores/GeoDash");                                                             //<=====
-}
 /**************************************************************/
 // ad_processGTNReadAll(_result, _path,  _snapshot, _save, _error)
 // Called by fb_readAll to handle result of read ALL GTN records request.
@@ -301,14 +227,13 @@ function ad_processGTNReadAll(_result, _path, _snapshot, _save, _error) {
       //  MATCH YOUR FIREBASE RECORDS FOR THE PATH                      //<=====
       ad_adminArray.push({
         uid: childKey,
-        userName: childData.name,
-        wins: childData.wins,
-        losses: childData.losses
+        gameName: childData.gameName,
+        score: childData.score
         //   more fields ????
       });
     });
   } else {
-    console.log('%c ad_processGeoDashReadAll(): no records',
+    console.log('%c ad_processGTNReadAll(): no records',
                 'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';');
   }
 
@@ -317,12 +242,12 @@ function ad_processGTNReadAll(_result, _path, _snapshot, _save, _error) {
   //  7 = COLUMMN NUMBER WHICH CONTAINS THE DATABASE KEY.               //<=====
   //  8 = DATABASE PATH THE RECORDS WERE READ FROM.                     //<=====
   ad_displayAll("t_userData", ad_adminArray, true, "", "", "",
-    1, "gameScores/GTN");                                                             //<=====
+    1, GTN);                                                             //<=====
 }
 
 /**************************************************************/
-// ad_processAdminReadAll(_result, _path,  _snapshot, _save, _error)
-// Called by fb_readAll to handle result of read ALL Admin records request.
+// ad_processBCReadAll(_result, _path,  _snapshot, _save, _error)
+// Called by fb_readAll to handle result of read ALL BC records request.
 // Save data & update display with record info
 // Input:  result('waiting...', 'OK', 'error'), path, 
 //         snapshot, where to save it & error msg if any
@@ -331,8 +256,8 @@ function ad_processGTNReadAll(_result, _path, _snapshot, _save, _error) {
 // Return: n/a
 /**************************************************************/
 //                 _procFunc(_result, _path, _snapshot, _save, _error)
-function ad_processAdminReadAll(_result, _path, _snapshot, _save, _error) {
-  console.log('%c ad_processAdminReadAll(): result= ' + _result,
+function ad_processBCReadAll(_result, _path, _snapshot, _save, _error) {
+  console.log('%c ad_processBCReadAll(): result= ' + _result,
               'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';');
 
   // Note: if read was successful, _result  must = "OK"                 //<=====
@@ -355,11 +280,14 @@ function ad_processAdminReadAll(_result, _path, _snapshot, _save, _error) {
       // ENSURE THE FEILDS YOU PUSH INTO THE ARRAY OF OBJECTS           //<=====
       //  MATCH YOUR FIREBASE RECORDS FOR THE PATH                      //<=====
       ad_adminArray.push({
-        [childKey]: childData,
+        uid: childKey,
+        gameName: childData.gameName,
+        level: childData.level
+        //   more fields ????
       });
     });
   } else {
-    console.log('%c ad_processGTNReadAll(): no records',
+    console.log('%c ad_processBCReadAll(): no records',
                 'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';');
   }
 
@@ -368,7 +296,7 @@ function ad_processAdminReadAll(_result, _path, _snapshot, _save, _error) {
   //  7 = COLUMMN NUMBER WHICH CONTAINS THE DATABASE KEY.               //<=====
   //  8 = DATABASE PATH THE RECORDS WERE READ FROM.                     //<=====
   ad_displayAll("t_userData", ad_adminArray, true, "", "", "",
-    1, "gameScores/GTN");                                                             //<=====
+    1, BC);                                                             //<=====
 }
 
 /**************************************************************/
@@ -445,7 +373,7 @@ function ad_alterClass(_class, _colour) {
 
 /**************************************************************/
 // ad_displayAll(_tableId, _array, _action, _hideId, _showId, _path)
-// Called by ad_dbRAllUResult & ad_dbRAllGeoDashResult
+// Called by ad_dbRAllUResult & ad_dbRAllGTNResult
 // Display all user records screen:
 //    1. optionaly hide other screen & display the admin screen.
 //    2. empty the html table.
@@ -461,7 +389,7 @@ function ad_alterClass(_class, _colour) {
 //         7. firebase path for delete capability.
 // Return: n/a
 //
-// V01: Initial vergtnon
+// V01: Initial version
 // v02: Add delete & update code
 //
 // Example call of ad_displayAll:
@@ -512,7 +440,7 @@ function ad_displayAll(_tableId, _array, _action, _hideId1, _hideId2,
 
 /**************************************************************/
 // ad_genTableHead(_tableInfo, _fieldNames, _action)
-// Called by ad_GeoDash
+// Called by ad_GTN
 // Create table header
 // Input:  table & object array of data 
 //         if _action = true, then add action column
@@ -544,6 +472,7 @@ function ad_genTableHead(_tableInfo, _fieldNames, _action) {
 
 /**************************************************************/
 // ad_genTableEntry(_tableInfo, _array, _action, _tableId, _item, _path)
+// Called by ad_GTN
 // Create table entries
 // Input:  table & object array of data
 //         if _action = true, then add DELETE button
@@ -606,7 +535,7 @@ function ad_clickEditCell(_tableId, _item, _path) {
   table.onclick = function(event) {
     //console.log('%c ad_clickEditCell', 'click event called. path = ' +
     //  _path, 'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';'); 
-    // 4 posgtnble targets:                
+    // 4 possible targets:                
     let target = event.target.closest('.edit-cancel,.edit-ok,td');
 
     if (!table.contains(target)) return;
@@ -634,7 +563,7 @@ function ad_clickEditCell(_tableId, _item, _path) {
       data: td.innerHTML
     };
 
-    td.classList.add('edit-td'); // td is in edit state, CSS also styles area ingtnde
+    td.classList.add('edit-td'); // td is in edit state, CSS also styles area inside
 
     let textArea = document.createElement('textarea');
     textArea.style.width = td.clientWidth + 'px';
@@ -694,7 +623,7 @@ function ad_clickEditCell(_tableId, _item, _path) {
 // Input:  path, key, field name, data & td object
 // Return: n/a
 /**************************************************************/
-function ad_dbUpdateRec(_path, _dbKey, _dbFieldName, _data, _td) {/*
+function ad_dbUpdateRec(_path, _dbKey, _dbFieldName, _data, _td) {
   console.log('%c ad_dbUpdateRec(): _path/_dbKey = ' + _path + '/' +
               _dbKey + ',  _dbFieldName = ' + _dbFieldName +
               ',  _data = ' + _data + '  _td = ' + _td,
@@ -712,7 +641,7 @@ function ad_dbUpdateRec(_path, _dbKey, _dbFieldName, _data, _td) {/*
       console.error('ad_dbUpdateRec(): Update failed for ' + _path +
                     '/' + _dbKey + ': ' + error.message);
       alert('Database write error; see console log for details');
-    });*/
+    });
 }
 
 /**************************************************************/
@@ -722,7 +651,7 @@ function ad_dbUpdateRec(_path, _dbKey, _dbFieldName, _data, _td) {/*
 // Input:  html table id, row & item number of firebase key and firebase path 
 // Return: n/a
 /**************************************************************/
-function ad_dbDelRec(_tableId, _row, _item, _path) {/*
+function ad_dbDelRec(_tableId, _row, _item, _path) {
   console.log('%c ad_dbDelRec(): _tableId/_row = ' + _tableId + '/' + _row +
               ',  _item = ' + _item + ',  _path = ' + _path,
               'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';');
@@ -742,7 +671,7 @@ function ad_dbDelRec(_tableId, _row, _item, _path) {/*
       console.error('ad_dbDelRec(): Remove failed for ' + _path + '/' +
                     key + ': ' + error.message);
       alert('Database delete error; see console log for details');
-    });*/
+    });
 }
 
 /**************************************************************/
@@ -752,14 +681,14 @@ function ad_dbDelRec(_tableId, _row, _item, _path) {/*
 // Input:  table id & row to delete
 // Return:
 /**************************************************************/
-function ad_delRow(_tableId, _row) {/*
+function ad_delRow(_tableId, _row) {
   console.log('%c ad_delRow(): _tableId/_row = ' + _tableId + '/' + _row,
               'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';');
 
   var i = _row.parentNode.parentNode.rowIndex;
   console.log('%c ad_delRow(): i = ' + i,
               'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';');
-  document.getElementById(_tableId).deleteRow(i);*/
+  document.getElementById(_tableId).deleteRow(i);
 }
 
 /**************************************************************/
@@ -769,7 +698,7 @@ function ad_delRow(_tableId, _row) {/*
 // Input:  table id
 // Return: n/a
 /**************************************************************/
-function ad_enterEvent(_tableId) {/*
+function ad_enterEvent(_tableId) {
   console.log('%c ad_enterEvent(): _tableId = ' + _tableId,
               'color: ' + COLAD_C + '; background-color: ' + COLAD_B + ';');
 
@@ -791,7 +720,7 @@ function ad_enterEvent(_tableId) {/*
         //document.getElementById(_tableId).deleteRow(2);
       }
     }
-  });*/
+  });
 }
 
 /**************************************************************/

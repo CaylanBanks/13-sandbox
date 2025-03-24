@@ -5,7 +5,7 @@ var p_timer;
 var intvTimer;
 bcScore = sec;
 timerFunc();   
-var user = sessionStorage.getItem('user');
+var user = sessionStorage.getItem('user.uid');
 console.log('user: ' + user);
 
 /**********************************************************/

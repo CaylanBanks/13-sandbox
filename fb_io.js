@@ -43,6 +43,8 @@ const firebaseConfig = {
         console.log(user);
         loginStatus = 'logged in';
         //fbP_procLogin(loginStatus, user);
+
+
         //write userdetails to firebase
         firebase.database().ref(user.uid + "/userDetails").set (
           {
@@ -53,6 +55,8 @@ const firebaseConfig = {
         )
 
 
+        sessionStorage.setItem('user.uid', user.uid);
+        sessionStorage.setItem('user.displayName', user.displayName);  
 
        
         console.log("Details written to DB");
