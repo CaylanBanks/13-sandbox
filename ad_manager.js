@@ -54,7 +54,9 @@ console.log("%c ad_manager.js", "color:green");
 const COLAD_C = 'black';
 const COLAD_B = '#F0E68C';
 const DETAILS = 'user';
-const BC= 'user/gameScore/BC';
+
+
+ 
 // fb_readALL
 // Reconstituted from gl
 // 
