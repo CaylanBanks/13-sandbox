@@ -4,24 +4,38 @@
 //read & write to firebase
 /**************************************************************/
 console.log("%c gtnLobby.js", "color:green");
-var user = sessionStorage.getItem('user.uid');
+
+var user = { 
+    uid: sessionStorage.getItem('user.uid'),
+    displayName: sessionStorage.getItem('user.displayName')
+}
 var activeLobby = "none";
 var lobbyRef = firebase.database().ref("lobby"); // Reference to the lobby in Firebase
+
+function resetLobby() {
+    console.log("resetLobby");
+    // Reset the lobby status in Firebase
+    lobbyRef.set({ active: "none" }, function (error) {
+        if (error) {
+            console.error("Error resetting lobby:", error);
+        } else {
+            console.log("Lobby reset successfully.");
+        }
+    });
+}
 
 
 
 // Listen for changes in the lobby status in Firebase
 lobbyRef.on("value", function (snapshot) {
     const lobbyData = snapshot.val();
-    if (lobbyData !== "none") {
-        activeLobby = user.uid;
-        checkLobby(); // Update the UI when the lobby status changes
+    if (lobbyData && lobbyData.active && lobbyData.active !== "none") {
+        activeLobby = lobbyData.active; // Set activeLobby to the active lobby ID
     } else {
-        activeLobby = "none";
-        checkLobby(); // Update the UI when the lobby status changes
+        activeLobby = "none"; // No active lobby
     }
+    checkLobby(); // Update the UI when the lobby status changes
 });
-
 function checkLobby() {
     console.log("checkLobby()");
 
@@ -34,12 +48,19 @@ function checkLobby() {
         document.body.appendChild(statusText);
     }
 
+    // Remove the "Create Lobby" button if it exists
+    let createButton = document.getElementById("createLobbyButton");
+    if (createButton) {
+        createButton.remove();
+    }
+
     if (activeLobby === "none") {
         console.log("lobby not active");
         statusText.textContent = "There aren't any lobbies active.";
 
         // Create a button to create a lobby
         const button = document.createElement("button");
+        button.id = "createLobbyButton"; // Assign an ID to the button
         button.textContent = "Create Lobby";
         button.style.padding = "10px 20px";
         button.style.fontSize = "16px";
@@ -59,54 +80,97 @@ function checkLobby() {
         console.log("lobby active");
         statusText.textContent = "Waiting for others to join...";
 
-        // Update the UI for other users
-        let joinButton = document.getElementById("joinLobbyButton");
-        if (!joinButton) {
-            joinButton = document.createElement("button");
-            joinButton.id = "joinLobbyButton";
-            joinButton.textContent = "Join Other Game";
-            joinButton.style.padding = "10px 20px";
-            joinButton.style.fontSize = "16px";
+        // Only show the "Join Other Game" button if the current user is not the lobby owner
+        if (activeLobby !== user.uid) {
+            let joinButton = document.getElementById("joinLobbyButton");
+            if (!joinButton) {
+                joinButton = document.createElement("button");
+                joinButton.id = "joinLobbyButton";
+                joinButton.textContent = "Join Other Game";
+                joinButton.style.padding = "10px 20px";
+                joinButton.style.fontSize = "16px";
 
-            // Add a click event listener to the join button
-            joinButton.addEventListener("click", function () {
-                console.log("Joining the lobby...");
-                alert("You joined the lobby!");
-            });
+                // Add a click event listener to the join button
+                joinButton.addEventListener("click", function () {
+                    console.log("Joining the lobby...");
+                    gtn_joinGame(activeLobby); // Call gtn_joinGame with the active lobby ID
+                });
 
-            // Append the join button to the body or a specific container
-            document.body.appendChild(joinButton);
+                // Append the join button to the body or a specific container
+                document.body.appendChild(joinButton);
+            }
+        } else {
+            console.log("You are the lobby owner. No join button displayed.");
         }
     }
 }
 
 function gtn_createGame() {
     console.log("gtn_createGame");
-// Stop listening for other waiting games
-firebase.database().ref('/waitingGames').off();
 
-// add the current user to the waiting games
-firebase.database().ref('/waitingGames/' + user.uid).set(user.displayName, function(error) {
-    if (error) {
-        console.error("Error creating waiting game:", error);
-    } else {
-        console.log("Waiting game created for user:", user.displayName);
-    }
-});
+    // Stop listening for other waiting games
+    firebase.database().ref('/waitingGames').off();
 
-//Set up the game in progress
-gameID = user.uid;// Use the user's UID as the game ID
-firebase.database().ref('/gamesInProgress/;' + gameID + '/').set({
-    P1: user.uid,
-    lastTurn: user.uid,
-    [user.uid]: { name: user.displayName, guess: "no guess yet", result: " "},
-}).then(() => {
-    console.log("Game created with ID:", gameID);
-    gtn_startGame(gameID, "gameOwner")
-})
+    // Add the current user to the waiting games
+    firebase.database().ref('/waitingGames/' + user.uid).set(user.displayName, function (error) {
+        if (error) {
+            console.error("Error creating waiting game:", error);
+        } else {
+            console.log("Waiting game created for user:", user.displayName);
+        }
+    });
 
-
+    // Set up the game in progress
+    const gameID = user.uid; // Use the user's UID as the game ID
+    firebase.database().ref('/gamesInProgress/' + gameID + '/').set({
+        P1: user.uid,
+        lastTurn: user.uid,
+        [user.uid]: { name: user.displayName, guess: "no guess yet", result: " " },
+    }).then(() => {
+        console.log("Game created with ID:", gameID);
+        gtn_startGame(gameID, "gameOwner");
+    });
 }
+
+
+function gtn_joinGame(gameID) {
+    console.log("gtn_joinGame");
+
+    console.log("    Joining game...", gameID);
+    // Detach the waiting game listener
+    firebase.database().ref('/waitingGames').off();
+
+    // Start the new game
+    // Set up the game globals
+    const gameNumber = Math.floor(Math.random() * 100);
+    let gameOwner = "player 1";
+
+    // Get the name of the owner and create the new game record
+    firebase.database().ref('/waitingGames/' + gameID).once('value', (snapshot) => {
+        console.log("callback in gtn_joinGame: get userID");
+
+        gameOwner = snapshot.val();
+        // Delete the waiting game
+        firebase.database().ref('/waitingGames/' + gameID + '/').set(null).then(() => {
+            // Create the new game record
+            console.log("callback in gtn_joinGame: delete waiting game");
+
+            console.log("Creating");
+
+            firebase.database().ref('/gamesInProgress/' + gameID + '/').update({
+                number: gameNumber,
+                P2: user.uid,
+                activePlayer: "P2",
+                [user.uid]: { name: user.displayName, guess: "no guess yet", result: " " }
+            }).then(() => {
+                gtn_startGame(gameID, "P2");
+            });
+        });
+    }, (error) => {
+        console.error("Error in gtn_joinGame:", error);
+    });
+}
+
 
 
 function gtn_startGame(gameID, role) {
