@@ -80,7 +80,9 @@ const firebaseConfig = {
         // Catch errors
         .catch(function(error) {
           loginStatus = 'error';
+          if (_procFunc) {
           _procFunc(loginStatus, null, _save, error);
+        }
         });
         
       }
