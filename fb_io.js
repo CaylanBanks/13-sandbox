@@ -25,7 +25,7 @@ const firebaseConfig = {
 // Input:  User logs in
 // Return: n/a
 /**************************************************************/
- function fb_login(_save, _user,) {
+ function fb_login(_save, _user, _procFunc) {
     console.log('fb_login() ');
     firebase.auth().onAuthStateChanged(newLogin);
     
