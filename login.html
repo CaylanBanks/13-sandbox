@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script defer src="fb_io.js"></script>
+    <script>
+        function login() {
+            fb_login(true, null, function (status, user, save, error) {
+                if (error) {
+                    console.error("Login error:", error.message);
+                    alert("Login failed: " + error.message);
+                } else {
+                    console.log("Login status:", status);
+                    console.log("User:", user);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Login</h1>
+    <button onclick="login()">Login with Google</button>
+</body>
+</html>
