@@ -31,7 +31,7 @@ function timerFunc() {
 function buttonClicked() {
 alert("You clicked the button in " + sec + " seconds");
  // write users score for guess the number game to database
-        firebase.database().ref(user + "/gameScores/BC").set (
+        firebase.database().ref("users/" + user ).update (
           {
              score: sec
           }

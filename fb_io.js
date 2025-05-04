@@ -9,86 +9,133 @@ console.log("%c fb_io.js", "color:green");
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyByB-WJsNPQEDK7SZ3dXrPMEUJ8aUpaaAg",
-    authDomain: "comp-2025-caylan-banks.firebaseapp.com",
-    databaseURL: "https://comp-2025-caylan-banks-default-rtdb.firebaseio.com",
-    projectId: "comp-2025-caylan-banks",
-    storageBucket: "comp-2025-caylan-banks.firebasestorage.app",
-    messagingSenderId: "727244724088",
-    appId: "1:727244724088:web:9c528f0677ca9f00bc5a8d",
-    measurementId: "G-H9NDB7QELM"
-  };
+  apiKey: "AIzaSyBTotozJ_MhOZ3kesJwnMzgQ15oqUVHVHo",
+  authDomain: "comp-2025-caylan-banks.firebaseapp.com",
+  databaseURL: "https://comp-2025-caylan-banks-default-rtdb.firebaseio.com",
+  projectId: "comp-2025-caylan-banks",
+  storageBucket: "comp-2025-caylan-banks.firebasestorage.app",
+  messagingSenderId: "515643998293",
+  appId: "1:515643998293:web:4a5c7f1dd191b637e3d4dc",
+  measurementId: "G-92D1R4GW3P"
+};
+
+  // Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+
 
 /**************************************************************/
 // fb_login(_save,_user)
-// Called by various
-// Input:  User logs in
+// Handles login and checks if the user is registered
+/**************************************************************/
+function fb_login(_save, _user, _procFunc) {
+  console.log('fb_login() called');
+  firebase.auth().onAuthStateChanged(newLogin);
+
+  function newLogin(user) {
+      if (user) {
+          console.log("User logged in:", user);
+          loginStatus = 'logged in';
+
+          // Save user details in session storage
+          sessionStorage.setItem("user.uid", user.uid);
+          sessionStorage.setItem("user.displayName", user.displayName);
+          sessionStorage.setItem("user.email", user.email);
+          sessionStorage.setItem("user.photoURL", user.photoURL);
+
+          // Check if the user already exists in the database
+          firebase.database().ref("users/" + user.uid).once("value", (snapshot) => {
+              console.log("Checking if user is registered...");
+              console.log("Database snapshot:", snapshot.val());
+
+              if (snapshot.exists()) {
+                  console.log("User is registered:", snapshot.val());
+
+                  // User is registered, no redirection needed
+                  alert("Welcome back, " + user.displayName + "!");
+                  window.location.href = "gamepage.html"; // Redirect to the game page
+                  if (_procFunc) {
+                      _procFunc(loginStatus, user, _save);
+                  }
+              } else {
+                  console.log("New user detected. Redirecting to registration...");
+                  window.location.href = "registration.html"; // Redirect to registration page
+              }
+          }).catch((error) => {
+              console.error("Error checking user registration:", error.message);
+              alert("An error occurred while checking registration. Please try again.");
+          });
+      } else {
+          console.log("User not logged in. Redirecting to Google login...");
+          loginStatus = 'logged out';
+
+          var provider = new firebase.auth.GoogleAuthProvider();
+          provider.setCustomParameters({
+              prompt: 'select_account'
+          });
+
+          firebase.auth().signInWithPopup(provider)
+              .then(function (result) {
+                  console.log("Login successful via popup:", result.user);
+                  loginStatus = 'logged in via popup';
+
+                  // Check if the user is registered after login
+                  newLogin(result.user);
+              })
+              .catch(function (error) {
+                  console.error("Login error:", error.message);
+                  loginStatus = 'error';
+                  alert("Login failed: " + error.message);
+                  if (_procFunc) {
+                      _procFunc(loginStatus, null, _save, error);
+                  }
+              });
+      }
+  }
+}
+
+
+/**************************************************************/
+// fb_registerUser(name, age)
+// Called by registration page
+// Input:  User's name and age
 // Return: n/a
 /**************************************************************/
- function fb_login(_save, _user, _procFunc) {
-    console.log('fb_login() ');
-    firebase.auth().onAuthStateChanged(newLogin);
-    
-    
-    function newLogin(user) {
-     let loginStatus;
-      if (user) {
-        var uid = user.uid;
-        // user is signed in, so call function to process login data
-        console.log("Logged in");
-        console.log(user.uid);
-        console.log(user.email);
-        console.log(user.displayName);
-        console.log(user.photoURL);
-        console.log(user);
-        loginStatus = 'logged in';
-        //fbP_procLogin(loginStatus, user);
+function fb_registerUser(name, age) {
+  console.log("fb_registerUser() called");
+  const userId = sessionStorage.getItem("user.uid");
 
-
-        //write userdetails to firebase
-        firebase.database().ref(user.uid + "/userDetails").set (
-          {
-            email: user.email,
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-          }
-        )
-
-
-        sessionStorage.setItem('user.uid', user.uid);
-        sessionStorage.setItem('user.displayName', user.displayName);  
-
-       
-        console.log("Details written to DB");
-      } 
-      else {
-        // user NOT logged in, so redirect to Google login
-        loginStatus = 'logged out';
-        console.log('fb_login(): status = ' + loginStatus);
-        
-         var provider = new firebase.auth.GoogleAuthProvider();
-        // To force Google sign to ask which account to use:
-        var provider = new firebase.auth.GoogleAuthProvider();
-        provider.setCustomParameters({
-          prompt: 'select_account'
-        });
-        
-        firebase.auth().signInWithPopup(provider).then(function(result) {
-          loginStatus = 'logged in via popup';
-          _procFunc(loginStatus, result.user, _save);
-        })
-        // Catch errors
-        .catch(function(error) {
-          loginStatus = 'error';
-          if (_procFunc) {
-          _procFunc(loginStatus, null, _save, error);
-        }
-        });
-        
-      }
-    }
-   
+  if (!userId) {
+      alert("Error: User not logged in. Please log in first.");
+      window.location.href = "login.html"; // Redirect to login page
+      return;
   }
+
+  // Retrieve existing user details from session storage
+  const displayName = sessionStorage.getItem("user.displayName");
+  const email = sessionStorage.getItem("user.email");
+  const photoURL = sessionStorage.getItem("user.photoURL");
+
+  // Prepare the data to update
+  const userData = {
+      name: name,
+      age: age,
+      displayName: displayName,
+      email: email,
+      photoURL: photoURL
+  };
+
+  // Save user details in Firebase Realtime Database
+  firebase.database().ref("users/" + userId).update(userData)
+      .then(() => {
+          alert("Registration successful! You can now play the games.");
+          window.location.href = "gamepage.html"; // Redirect to the game page
+      })
+      .catch((error) => {
+          console.error("Error during registration:", error.message);
+          alert(error.message);
+      });
+}
 
 /**************************************************************/
 // fb_readRec(_path,_key,_save,_procFunc)

@@ -40,7 +40,7 @@
    
     <script defer src="fb_io.js"></script>
     <script defer src="fbP_manager.js"></script>
-    <script defer src="gtnLobby.js"></script>
+    <script defer src="gtnGame.js"></script>
  
    
 </head>
@@ -56,7 +56,11 @@
     </a> -->
 
     <main>
-        <button onclick="resetLobby()">Reset Lobby</button>
+        <!-- Create Game Button -->
+        <button id="createGameButton" onclick="gtn_createGame()">Create Game</button>
+        
+        <!-- Waiting Message -->
+        <div id="waitingMessage" style="display: none;">Waiting for others to join...</div>
     </main>
     <footer>
          <div>Guess the number between 1 and 100!</div>
