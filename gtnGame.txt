@@ -38,17 +38,18 @@ function gtn_createGame() {
     const randomNumber = Math.floor(Math.random() * 100) + 1;
 
     firebase.database().ref('/gamesInProgress/' + gameId).set({
-        number: randomNumber,
-        P1: userId,
-        activePlayer: "P1",
-        [userId]: {
-            name: displayName,
-            guess: "no guess yet",
-            result: ""
-        }
-    }).then(() => {
-        console.log("Game setup complete. Waiting for a challenger...");
-    });
+    number: randomNumber,         // The secret number to guess (randomly generated)
+    P1: userId,                   // The user ID of the player who created the game (Player 1)
+    activePlayer: "P1",           // Indicates whose turn it is (starts with Player 1)
+    [userId]: {                   // An object for Player 1, keyed by their user ID
+        name: displayName,        // The display name of Player 1
+        guess: "no guess yet",    // Initial guess value
+        result: ""                // Initial result value
+    }
+}).then(() => {
+    console.log("Game setup complete. Waiting for a challenger...");
+});
+
 }
 
 
@@ -56,7 +57,7 @@ function gtn_createGame() {
 // gtn_joinGame()
 // Called by ????
 // Input:  User clicks button
-// Return: Creates a game and adds it to the waitingGames list
+// Return: joins the game
 /**************************************************************/
 function gtn_joinGame(gameId) {
     console.log("gtn_joinGame");
@@ -70,7 +71,7 @@ function gtn_joinGame(gameId) {
     // Update the game in progress
     firebase.database().ref('/gamesInProgress/' + gameId).update({
         P2: userId,
-        activePlayer: "P2",
+        activePlayer: "P2",  // this might be incorrect as p1 should still be active because they haven't guessed yet
         [userId]: {
             name: displayName,
             guess: "no guess yet",
