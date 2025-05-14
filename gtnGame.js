@@ -36,10 +36,9 @@ function gtn_createGame(gameId) {
         }
     });
 
-    // Set game id to user id
-    const gameId = userId;
+    
 
-    //Create the random number
+    //Create the random numberaxaxzxz
     const randomNumber = Math.floor(Math.random() * 100) + 1;
 
     //write to the firebase the random number, the user id
@@ -68,7 +67,21 @@ function gtn_createGame(gameId) {
 function gtn_joinGame(gameId) { 
     console.log("%c gtn_joinGame()", "color:green");
 
+    // Remove the game from the waitingGames list
+    firebase.database().ref('/waitingGames/' + gameId).remove();
 
 
+    // Update the game in progress
+    firebase.database().ref('/gamesInProgress/' + gameId).update({
+        P2: userId,
+        activePlayer: "P2",  // this might be incorrect as p1 should still be active because they haven't guessed yet
+        [userId]: {
+            name: displayName,
+            guess: "no guess yet",
+            result: ""
+        }
+    }).then(() => {
+        console.log("Joined game as challenger.");
+    });
 
 }
