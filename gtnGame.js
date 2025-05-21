@@ -3,9 +3,9 @@
 //Written by Caylan Banks 2024/2025
 //Code for the Guess the Number game
 /**************************************************************/
-
-const userId = sessionStorage.getItem("user.uid");
+console.log("%c gtnGame.js", "color:green");
 const displayName = sessionStorage.getItem("user.displayName");
+
 
 /**************************************************************/
 // gtn_createGame()
@@ -14,9 +14,9 @@ const displayName = sessionStorage.getItem("user.displayName");
 // Return: Creates a game and adds it to the waitingGames list
 /**************************************************************/
 
-function gtn_createGame(gameId) {
+function gtn_createGame(userId) {
     console.log("%c gtn_createGame()", "color:green");
-
+console.log("Game ID:", userId);
     // Hide the "Create Game" button
     const createGameButton = document.getElementById("createGameButton");
     createGameButton.style.display = "none";
@@ -38,12 +38,12 @@ function gtn_createGame(gameId) {
 
     
 
-    //Create the random numberaxaxzxz
+    //Create the random number
     const randomNumber = Math.floor(Math.random() * 100) + 1;
 
     //write to the firebase the random number, the user id
     // sets P1 as the active player with the next guess
-    firebase.database().ref('/gamesInProgress/' + gameId).set({
+    firebase.database().ref('/gamesInProgress/' + userId).set({
     number: randomNumber,         
     P1: userId,                   
     activePlayer: "P1",           
@@ -64,15 +64,15 @@ function gtn_createGame(gameId) {
 // Input:  User clicks button
 // Return: Creates a game and adds it to the waitingGames list
 /**************************************************************/
-function gtn_joinGame(gameId) { 
+function gtn_joinGame(userId) { 
     console.log("%c gtn_joinGame()", "color:green");
 
     // Remove the game from the waitingGames list
-    firebase.database().ref('/waitingGames/' + gameId).remove();
+    firebase.database().ref('/waitingGames/' + userId).remove();
 
 
     // Update the game in progress
-    firebase.database().ref('/gamesInProgress/' + gameId).update({
+    firebase.database().ref('/gamesInProgress/' + userId).update({
         P2: userId,
         activePlayer: "P2",  // this might be incorrect as p1 should still be active because they haven't guessed yet
         [userId]: {
