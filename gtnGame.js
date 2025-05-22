@@ -14,8 +14,10 @@ const displayName = sessionStorage.getItem("user.displayName");
 // Return: Creates a game and adds it to the waitingGames list
 /**************************************************************/
 
-function gtn_createGame(userId) {
+function gtn_createGame() {
     console.log("%c gtn_createGame()", "color:green");
+     const userId = sessionStorage.getItem("user.uid");
+
 console.log("Game ID:", userId);
     // Hide the "Create Game" button
     const createGameButton = document.getElementById("createGameButton");
