@@ -7,6 +7,39 @@ console.log("%c gtnGame.js", "color:green");
 const displayName = sessionStorage.getItem("user.displayName");
 
 
+
+
+function updateLobbyUI() {
+    const userId = sessionStorage.getItem("user.uid");
+    const displayName = sessionStorage.getItem("user.displayName");
+    const gameDisplay = document.getElementById("gameDisplay");
+
+    // Listen for waiting games
+    firebase.database().ref('/waitingGames').once('value', (snapshot) => {
+        const games = snapshot.val();
+        gameDisplay.innerHTML = ""; // Clear previous content
+
+        if (!games) {
+            // No waiting games, show create button
+            gameDisplay.innerHTML = `<button id="createGameButton" onclick="gtn_createGame()">Create Game</button>`;
+        } else {
+            // There are waiting games, show join buttons for each (except your own)
+            let foundOtherGame = false;
+            Object.keys(games).forEach((key) => {
+                if (key !== userId) {
+                    foundOtherGame = true;
+                    gameDisplay.innerHTML += `<button onclick="gtn_joinGame('${key}')">Join ${games[key]}'s game</button><br>`;
+                }
+            });
+            if (!foundOtherGame) {
+                // Only your own game is waiting, show waiting message
+                gameDisplay.innerHTML = `<div id="waitingMessage">Waiting for others to join...</div>`;
+            }
+        }
+    });
+}
+
+
 /**************************************************************/
 // gtn_createGame()
 // Called by gtnlobby.html
@@ -68,7 +101,7 @@ console.log("Game ID:", userId);
 /**************************************************************/
 function gtn_joinGame(userId) { 
     console.log("%c gtn_joinGame()", "color:green");
-
+     const userId = sessionStorage.getItem("user.uid");
     // Remove the game from the waitingGames list
     firebase.database().ref('/waitingGames/' + userId).remove();
 
@@ -87,3 +120,5 @@ function gtn_joinGame(userId) {
     });
 
 }
+
+document.addEventListener("DOMContentLoaded", updateLobbyUI);
