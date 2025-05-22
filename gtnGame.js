@@ -4,7 +4,7 @@
 //Code for the Guess the Number game
 /**************************************************************/
 console.log("%c gtnGame.js", "color:green");
-const displayName = sessionStorage.getItem("user.displayName");
+
 
 
 
@@ -49,7 +49,7 @@ function updateLobbyUI() {
 
 function gtn_createGame() {
     console.log("%c gtn_createGame()", "color:green");
-     const userId = sessionStorage.getItem("user.uid");
+   
 
 console.log("Game ID:", userId);
     // Hide the "Create Game" buttonsa
