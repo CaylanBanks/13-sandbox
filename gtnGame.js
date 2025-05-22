@@ -19,7 +19,7 @@ function gtn_createGame() {
      const userId = sessionStorage.getItem("user.uid");
 
 console.log("Game ID:", userId);
-    // Hide the "Create Game" button
+    // Hide the "Create Game" buttonsa
     const createGameButton = document.getElementById("createGameButton");
     createGameButton.style.display = "none";
 
