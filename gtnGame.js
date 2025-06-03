@@ -5,6 +5,42 @@
 /**************************************************************/
 console.log("%c gtnGame.js", "color:green");
 
+window.addEventListener("load", gtn_checkForWaitingGames);
+   const userId = sessionStorage.getItem("user.uid");
+    const displayName = sessionStorage.getItem("user.displayName");
+
+/**************************************************************/
+// gtn_checkForWaitingGames()
+// Called on page load or refresh
+// Input:  None
+// Return: Shows appropriate button based on game availability
+/**************************************************************/
+function gtn_checkForWaitingGames() {
+    console.log("%c gtn_checkForWaitingGames()", "color:blue");
+
+    const createGameButton = document.getElementById("createGameButton");
+    const joinGameButton = document.getElementById("joinGameButton");
+
+    firebase.database().ref('/waitingGames/').once('value')
+        .then(snapshot => {
+            const games = snapshot.val();
+
+            if (games && Object.keys(games).length > 0) {
+                // At least one waiting game found
+                console.log("Waiting game(s) found:", games);
+                joinGameButton.style.display = "block";
+                createGameButton.style.display = "none";
+            } else {
+                // No waiting games
+                console.log("No waiting games found.");
+                createGameButton.style.display = "block";
+                joinGameButton.style.display = "none";
+            }
+        })
+        .catch(error => {
+            console.error("Error checking for waiting games:", error);
+        });
+}
 
 /**************************************************************/
 // gtn_createGame()
@@ -15,8 +51,6 @@ console.log("%c gtnGame.js", "color:green");
 
 function gtn_createGame() {
     console.log("%c gtn_createGame()", "color:orange");
-   const userId = sessionStorage.getItem("user.uid");
-    const displayName = sessionStorage.getItem("user.displayName");
     if (!userId || !displayName) {
         console.error("User ID or display name not found in session storage.");
         return;
