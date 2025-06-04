@@ -6,8 +6,9 @@
 console.log("%c gtnGame.js", "color:green");
 
 window.addEventListener("load", gtn_checkForWaitingGames);
-   const userId = sessionStorage.getItem("user.uid");
-    const displayName = sessionStorage.getItem("user.displayName");
+  
+const userId = sessionStorage.getItem("user.uid");
+const displayName = sessionStorage.getItem("user.displayName");
 
 /**************************************************************/
 // gtn_checkForWaitingGames()
@@ -63,7 +64,7 @@ console.log("Game ID:", userId);
 
     // Show the "Waiting for others to join" message
     const waitingMessage = document.getElementById("waitingMessage");
-    waitingMessage.style.display = "block";
+   // waitingMessage.style.display = "block";
 
 
 
