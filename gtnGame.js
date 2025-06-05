@@ -6,7 +6,7 @@
 console.log("%c gtnGame.js", "color:green");
 waitingMessage.style.display = "none";
 window.addEventListener("load", gtn_checkForWaitingGames);
-  
+window.addEventListener("load", gtn_checkForChallenger);
 const userId = sessionStorage.getItem("user.uid");
 const displayName = sessionStorage.getItem("user.displayName");
 
@@ -96,10 +96,35 @@ console.log("Game ID:", userId);
     }
 }).then(() => {
     console.log("Game setup complete. Waiting for a challenger...");
+   
 });
 
 }
 
+function draw() {
+    gtn_checkForChallenger();
+}
+
+function gtn_checkForChallenger() {
+
+        // Check if there is a challenger waiting
+        firebase.database().ref('/waitingGames/').once('value')
+            .then(snapshot => {
+                const games = snapshot.val();
+
+                if (games && Object.keys(games).length > 1) {
+                    // At least one challenger found
+                    console.log("Challenger found:", games);
+                    gtn_joinGame();
+                } else {
+                    // No challengers found
+                    console.log("No challengers found.");
+                }
+            })
+            .catch(error => {
+                console.error("Error checking for challengers:", error);
+            });
+    }
 /**************************************************************/
 // gtn_joinGame
 // Called by gtnlobby.html
