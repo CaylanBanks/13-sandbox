@@ -101,14 +101,14 @@ console.log("Game ID:", userId);
 }
 
 /**************************************************************/
-// gtn_createGame()
+// gtn_joinGame
 // Called by gtnlobby.html
 // Input:  User clicks button
-// Return: Creates a game and adds it to the waitingGames list
+// Return: User joins a waiting game
 /**************************************************************/
 function gtn_joinGame() { 
     console.log("%c gtn_joinGame()", "color:green");
-
+joinGameButton.style.display = "none";
     // Remove the game from the waitingGames list
     firebase.database().ref('/waitingGames/' + userId).remove();
 
@@ -126,4 +126,74 @@ function gtn_joinGame() {
         console.log("Joined game as challenger.");
     });
 
+}
+
+
+
+// gtn_makeGuess()
+// Called by ????
+// Input:  User types in a number (a guess)
+// Return: User is told if the guess is too high, too low, or correct
+/**************************************************************/
+function gtn_makeGuess(guess) {
+    console.log("gtn_makeGuess");
+
+    const gameId = sessionStorage.getItem("gameId");
+    const userId = sessionStorage.getItem("user.uid");
+
+    firebase.database().ref('/gamesInProgress/' + gameId).once('value', (snapshot) => {
+        const gameData = snapshot.val();
+        const number = gameData.number;
+
+        let result = "";
+        if (guess < number) {
+            result = "too low";
+        } else if (guess > number) {
+            result = "too high";
+        } else {
+            result = "win";
+            gtn_updateScore(gameId, userId);
+        }
+
+        const updates = {};
+        updates[userId + "/guess"] = guess;
+        updates[userId + "/result"] = result;
+        updates["activePlayer"] = gameData.activePlayer === "P1" ? "P2" : "P1";
+
+        firebase.database().ref('/gamesInProgress/' + gameId).update(updates);
+    });
+}
+
+function gtn_updateScore(gameId, winnerId) {
+    console.log("gtn_updateScore");
+
+    firebase.database().ref('/gamesInProgress/' + gameId).once('value', (snapshot) => {
+        const gameData = snapshot.val();
+        const loserId = gameData.P1 === winnerId ? gameData.P2 : gameData.P1;
+
+        const updates = {};
+
+        // Update winner's score
+        firebase.database().ref('/gameScores/' + winnerId).once('value', (winnerSnapshot) => {
+            const winnerData = winnerSnapshot.val() || { wins: 0, losses: 0 };
+            updates[winnerId] = {
+                name: gameData[winnerId].name,
+                wins: winnerData.wins + 1,
+                losses: winnerData.losses
+            };
+
+            // Update loser's score
+            firebase.database().ref('/gameScores/' + loserId).once('value', (loserSnapshot) => {
+                const loserData = loserSnapshot.val() || { wins: 0, losses: 0 };
+                updates[loserId] = {
+                    name: gameData[loserId].name,
+                    wins: loserData.wins,
+                    losses: loserData.losses + 1
+                };
+
+                // Save updates to Firebase
+                firebase.database().ref('/gameScores').update(updates);
+            });
+        });
+    });
 }
