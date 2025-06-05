@@ -4,7 +4,7 @@
 //Code for the Guess the Number game
 /**************************************************************/
 console.log("%c gtnGame.js", "color:green");
-
+waitingMessage.style.display = "none";
 window.addEventListener("load", gtn_checkForWaitingGames);
   
 const userId = sessionStorage.getItem("user.uid");
@@ -56,15 +56,16 @@ function gtn_createGame() {
         console.error("User ID or display name not found in session storage.");
         return;
     }
+    const createGameButton = document.getElementById("createGameButton");
+    const waitingMessage = document.getElementById("waitingMessage");
 
 console.log("Game ID:", userId);
-    // Hide the "Create Game" buttonsa
-    const createGameButton = document.getElementById("createGameButton");
+    // Hide the "Create Game" buttons
     createGameButton.style.display = "none";
 
     // Show the "Waiting for others to join" message
-    const waitingMessage = document.getElementById("waitingMessage");
-   // waitingMessage.style.display = "block";
+
+    waitingMessage.style.display = "block";
 
 
 
