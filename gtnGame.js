@@ -101,29 +101,22 @@ console.log("Game ID:", userId);
 
 }
 
-function draw() {
-    gtn_checkForChallenger();
-}
 
 function gtn_checkForChallenger() {
 
         // Check if there is a challenger waiting
-        firebase.database().ref('/waitingGames/').once('value')
-            .then(snapshot => {
-                const games = snapshot.val();
-
-                if (games && Object.keys(games).length > 1) {
+        firebase.database().ref('/waitingGames/').on('value', (snapshot) => {
+            const gameData = snapshot.val();
+            
+                if (gameData && gameData.P2) {
                     // At least one challenger found
-                    console.log("Challenger found:", games);
-                    gtn_joinGame();
+                    console.log("Challenger found:", gameData.P2);
+                    gtn_startGame();
                 } else {
                     // No challengers found
                     console.log("No challengers found.");
                 }
             })
-            .catch(error => {
-                console.error("Error checking for challengers:", error);
-            });
     }
 /**************************************************************/
 // gtn_joinGame
@@ -154,7 +147,9 @@ joinGameButton.style.display = "none";
 }
 
 
-
+function gtn_startGame() {
+    console.log("%c gtn_startGame()", "color:purple");
+}
 // gtn_makeGuess()
 // Called by ????
 // Input:  User types in a number (a guess)
