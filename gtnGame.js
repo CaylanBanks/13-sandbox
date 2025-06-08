@@ -5,8 +5,8 @@
 /**************************************************************/
 console.log("%c gtnGame.js", "color:green");
 waitingMessage.style.display = "none";
-window.addEventListener("load", gtn_checkForWaitingGames);
-window.addEventListener("load", gtn_checkForChallenger);
+gtn_checkForWaitingGames(); // Check for waiting games on page load
+
 const userId = sessionStorage.getItem("user.uid");
 const displayName = sessionStorage.getItem("user.displayName");
 
@@ -21,28 +21,30 @@ function gtn_checkForWaitingGames() {
 
     const createGameButton = document.getElementById("createGameButton");
     const joinGameButton = document.getElementById("joinGameButton");
+    
+    const waitingGamesref = firebase.database().ref('/waitingGames/');
+    const listener = waitingGamesref.on('value', (snapshot) => {
+        const games = snapshot.val();
 
-    firebase.database().ref('/waitingGames/').once('value')
-        .then(snapshot => {
-            const games = snapshot.val();
 
-            if (games && Object.keys(games).length > 0) {
-                // At least one waiting game found
-                console.log("Waiting game(s) found:", games);
-                joinGameButton.style.display = "block";
-                createGameButton.style.display = "none";
-            } else {
-                // No waiting games
-                console.log("No waiting games found.");
-                createGameButton.style.display = "block";
-                joinGameButton.style.display = "none";
-            }
-        })
-        .catch(error => {
-            console.error("Error checking for waiting games:", error);
-        });
+        if (games && Object.keys(games).length > 0) {
+            // At least one waiting game found
+            console.log("Waiting game(s) found:", games);
+            joinGameButton.style.display = "block";
+            createGameButton.style.display = "none";
+            // Turn off the listener
+            waitingGamesref.off('value', listener); // Remove the listener after checking
+            
+        } else {
+            // No waiting games
+            console.log("No waiting games found.");
+            createGameButton.style.display = "block";
+            joinGameButton.style.display = "none";
+        }
+    
+   
+})
 }
-
 /**************************************************************/
 // gtn_createGame()
 // Called by gtnlobby.html
@@ -62,7 +64,7 @@ function gtn_createGame() {
 console.log("Game ID:", userId);
     // Hide the "Create Game" buttons
     createGameButton.style.display = "none";
-
+    
     // Show the "Waiting for others to join" message
 
     waitingMessage.style.display = "block";
@@ -79,7 +81,7 @@ console.log("Game ID:", userId);
     });
 
     
-
+joinGameButton.style.display = "none";
     //Create the random number
     const randomNumber = Math.floor(Math.random() * 100) + 1;
 
@@ -95,28 +97,38 @@ console.log("Game ID:", userId);
         result: ""                
     }
 }).then(() => {
+    gtn_checkForChallenger(); // Check for challengers after creating the game
     console.log("Game setup complete. Waiting for a challenger...");
    
 });
 
 }
 
-
+/**************************************************************/
+// gtn_checkForChallenger()
+// Called by gtnlobby.html
+// Input:  User clicks button
+// Return: Creates a game and adds it to the waitingGames list
+/**************************************************************/
 function gtn_checkForChallenger() {
 
-        // Check if there is a challenger waiting
-        firebase.database().ref('/waitingGames/').on('value', (snapshot) => {
-            const gameData = snapshot.val();
-            
-                if (gameData && gameData.P2) {
-                    // At least one challenger found
-                    console.log("Challenger found:", gameData.P2);
-                    gtn_startGame();
-                } else {
-                    // No challengers found
-                    console.log("No challengers found.");
-                }
-            })
+    console.log("%c gtn_checkForChallenger()", "color:purple");
+    const waitingGamesRef = firebase.database().ref('/waitingGames/');
+    const listener = waitingGamesRef.on('value', snapshot => {
+        const gameData = snapshot.val();
+
+        if (gameData && gameData.P2) {
+            console.log("Challenger found:", gameData.P2);
+
+            // turn off the listener
+            waitingGamesRef.off('value', listener);
+            gtn_startGame;
+        }
+        else {
+            console.log("No challenger found");
+        }
+})
+       
     }
 /**************************************************************/
 // gtn_joinGame
